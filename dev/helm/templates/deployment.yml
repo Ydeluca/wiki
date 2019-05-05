@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: wikijs
+  name: wikijs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wikijs
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: wikijs
+    spec:
+      containers:
+      - name: wikijs
+        image: requarks/wiki:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        resources: {}  
+        envFrom:
+        - configMapRef:
+            name: env-config
+        volumeMounts:
+        - name: config-volume
+          mountPath:  /wiki/config.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: config-wiki
